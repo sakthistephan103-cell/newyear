@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Year Celebration</title>
+
+<style>
+/* BEAUTIFUL GRADIENT ANIMATION BACKGROUND */
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff0844, #ffb199, #2b86c5, #6a11cb);
+    background-size: 400% 400%;
+    animation: bgMove 10s infinite alternate;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@keyframes bgMove {
+    0% { background-position: left; }
+    100% { background-position: right; }
+}
+
+/* CELEBRATION BOX */
+.box {
+    text-align: center;
+    padding: 30px 50px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 25px;
+    backdrop-filter: blur(12px);
+    animation: fadeUp 1.5s ease-out;
+}
+@keyframes fadeUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* NAME MESSAGE */
+#msg {
+    font-size: 40px;
+    font-weight: bold;
+    text-shadow: 0 0 15px #fff;
+}
+
+/* NEW YEAR NEON TEXT */
+#newyear {
+    font-size: 55px;
+    margin-top: 15px;
+    font-weight: 800;
+    animation: neon 2s infinite alternate;
+}
+@keyframes neon {
+    0% { text-shadow: 0 0 10px #ffea00, 0 0 20px #ff0084; }
+    100% { text-shadow: 0 0 30px #fff, 0 0 50px #ff00ff; }
+}
+
+/* FIREWORKS CANVAS */
+#fireworks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* FLOATING BALLOONS */
+.balloon {
+    position: absolute;
+    bottom: -120px;
+    width: 50px;
+    height: 70px;
+    background: radial-gradient(circle at 35% 25%, #fff, rgba(255,255,255,0.2));
+    border-radius: 50% 50% 45% 45%;
+    animation: floatUp 8s infinite ease-in;
+}
+@keyframes floatUp {
+    from { transform: translateY(0); }
+    to { transform: translateY(-150vh); }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<!-- BALLOONS -->
+<div class="balloon" style="left:10%; animation-delay:1s; background:#ff3cac;"></div>
+<div class="balloon" style="left:30%; animation-delay:3s; background:#ffea00;"></div>
+<div class="balloon" style="left:50%; animation-delay:5s; background:#00eaff;"></div>
+<div class="balloon" style="left:70%; animation-delay:2s; background:#9b59b6;"></div>
+
+<!-- CELEBRATION BOX -->
+<div class="box">
+    <h1 id="msg">Welcome!</h1>
+    <p id="newyear">🎉 Happy New Year 2025 🎆</p>
+</div>
+
+<script>
+/* --- RECEIVE NAME FROM URL --- */
+const urlParams = new URLSearchParams(window.location.search);
+const user = urlParams.get("user");
+document.getElementById("msg").innerText = "Welcome, " + user + "! 🎉";
+
+/* --- FIREWORKS EFFECT --- */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.speedX = rand(-3, 3);
+        this.speedY = rand(-3, 3);
+        this.alpha = 1;
+        this.size = rand(2, 4);
+        this.color = color;
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.alpha -= 0.02;
+    }
+    draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+}
+
+class Firework {
+    constructor() {
+        this.x = rand(0, canvas.width);
+        this.y = canvas.height;
+        this.targetX = rand(50, canvas.width - 50);
+        this.targetY = rand(50, canvas.height * 0.5);
+        this.speed = 4;
+        this.particles = [];
+        this.color = `hsl(${rand(0,360)},100%,50%)`;
+    }
+
+    update() {
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+
+        if (dist < 8) {
+            for (let i=0; i<50; i++) {
+                this.particles.push(new Particle(this.x, this.y, this.color));
+            }
+            fireworks.splice(fireworks.indexOf(this), 1);
+        } else {
+            this.x += dx / dist * this.speed;
+            this.y += dy / dist * this.speed;
+        }
+    }
+
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+let fireworks = [];
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (Math.random() < 0.05) fireworks.push(new Firework());
+
+    fireworks.forEach(f => { f.update(); f.draw(); f.particles.forEach(p => { p.update(); p.draw(); }); });
+
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Input</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #1e3c72, #2a5298, #5f2c82, #49a09d);
+        background-size: 400% 400%;
+        animation: gradientMove 12s infinite alternate;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: left top; }
+        100% { background-position: right bottom; }
+    }
+
+    /* Floating particles */
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        animation: float 6s infinite ease-in-out;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); opacity: 0.3; }
+        50% { transform: translateY(-25px); opacity: 0.8; }
+        100% { transform: translateY(0); opacity: 0.3; }
+    }
+
+    /* Main Card */
+    .card {
+        background: rgba(255,255,255,0.14);
+        padding: 40px 50px;
+        border-radius: 20px;
+        text-align: center;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+        animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.85); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    h2 {
+        color: white;
+        font-size: 30px;
+        margin-bottom: 18px;
+        text-shadow: 0 0 15px rgba(255,255,255,0.4);
+    }
+
+    input {
+        width: 260px;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        font-size: 16px;
+        outline: none;
+        text-align: center;
+        background: rgba(255,255,255,0.75);
+        transition: 0.3s;
+    }
+
+    input:focus {
+        background: white;
+        box-shadow: 0 0 10px rgba(255,255,255,0.6);
+        transform: scale(1.03);
+    }
+
+    button {
+        margin-top: 18px;
+        padding: 14px 30px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ffe066, #ffd23f);
+        font-size: 17px;
+        font-weight: bold;
+        transition: 0.25s;
+        box-shadow: 0 8px 20px rgba(255,255,150,0.3);
+        color: #2b2b2b;
+    }
+
+    button:hover {
+        transform: scale(1.07);
+        background: linear-gradient(135deg, #ffea85, #ffe066);
+        box-shadow: 0 8px 25px rgba(255,255,170,0.4);
+    }
+</style>
+
+</head>
+<body>
+
+<!-- Ambient particles -->
+<div class="particle" style="width:18px;height:18px;left:15%;top:75%;animation-duration:5s;"></div>
+<div class="particle" style="width:25px;height:25px;left:40%;top:80%;animation-duration:7s;"></div>
+<div class="particle" style="width:15px;height:15px;left:70%;top:78%;animation-duration:6s;"></div>
+<div class="particle" style="width:22px;height:22px;left:85%;top:72%;animation-duration:8s;"></div>
+
+<div class="card">
+    <h2>✨ Enter Your Name ✨</h2>
+    <input type="text" id="nameBox" placeholder="Your name here">
+    <br>
+    <button onclick="goNext()">Submit</button>
+</div>
+
+<script>
+function goNext() {
+    let name = document.getElementById("nameBox").value;
+
+    if(name.trim() === "") {
+        alert("Please enter your name!");
+        return;
+    }
+
+    // Open next page
+    window.location.href = "ny.html?user=" + encodeURIComponent(name);
+}
+</script>
+
+</body>
+</html>
